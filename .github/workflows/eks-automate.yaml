@@ -35,7 +35,7 @@ jobs:
 
       - name: Install AWS CLI and eksctl
         run: |
-          curl --silent "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+          curl --silent -L "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" -O | tar xz -C /tmp
           sudo mv /tmp/eksctl /usr/local/bin/eksctl
 
   
