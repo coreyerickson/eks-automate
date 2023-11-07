@@ -18,25 +18,45 @@ jobs:
 
       - name: Configure AWS Credentials
         run: |
-          echo "$AWS_CREDENTIALS" > aws-credentials.json
           aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set default.region us-east-1
+          aws configure set default.region ${{ env.AWS_DEFAULT_REGION }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
 
 
       - name: Check for DEPLOY or DESTROY file
         run: |
+          if [[ -f DEPLOY ]] && [[ -f DESTROY ]]; then
+            echo "Cannot perform both a  DEPLOY and DESTROY, please remove one of the files. Exiting..."
+            exit 1
+          fi
+
           if [[ -f DEPLOY ]]; then
-            echo "Deploying EKS cluster..."
-            # Add eksctl commands
+            echo "Checking if the EKS cluster exists..."
+            if aws eks describe-cluster --name ${{ env.AWS_EKS_CLUSTERNAME }} --region ${{ env.AWS_DEFAULT_REGION }} &> /dev/null; then
+              echo "EKS cluster already exists. Skipping deployment."
+            else
+              echo "Deploying EKS cluster..."
+              # eksctl create cluster --name ${{ env.AWS_EKS_CLUSTERNAME }} --region ${{ env.AWS_DEFAULT_REGION }} --node-type t2.micro
+            fi
+
           elif [[ -f DESTROY ]]; then
-            echo "Destroying EKS cluster..."
-            # Add eksctl comands
+            echo "Checking if the EKS cluster exists..."
+            if ! aws eks describe-cluster --name ${{ env.AWS_EKS_CLUSTERNAME }} --region ${{ env.AWS_DEFAULT_REGION }} &> /dev/null; then
+              echo "EKS cluster does not exist. Skipping destruction."
+            else
+              echo "Destroying EKS cluster..."
+              # eksctl delete cluster --name ${{ env.AWS_EKS_CLUSTERNAME }} --region ${{ env.AWS_DEFAULT_REGION }}
+            fi
+
           else
             echo "No DEPLOY or DESTROY file found. Skipping..."
           fi
-        continue-on-error: true
 
+        continue-on-error: true
+        env:
+        AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+        AWS_EKS_CLUSTERNAME: ${{ env.AWS_EKS_CLUSTERNAME }}
