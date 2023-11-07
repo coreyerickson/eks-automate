@@ -1,0 +1,30 @@
+name: EKS Automate
+
+on:
+  push:
+    branches:
+      - eks-automate
+
+jobs:
+  deploy-or-destroy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+
+
+      - name: Check for DEPLOY or DESTROY file
+        run: |
+          if [[ -f DEPLOY ]]; then
+            echo "Deploying EKS cluster..."
+            # Add eksctl commands
+          elif [[ -f DESTROY ]]; then
+            echo "Destroying EKS cluster..."
+            # Add eksctl comands
+          else
+            echo "No DEPLOY or DESTROY file found. Skipping..."
+          fi
+        continue-on-error: true
+
