@@ -58,5 +58,5 @@ jobs:
 
         continue-on-error: true
         env:
-        AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
-        AWS_EKS_CLUSTERNAME: ${{ env.AWS_EKS_CLUSTERNAME }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
+          AWS_EKS_CLUSTERNAME: ${{ env.AWS_EKS_CLUSTERNAME }}
