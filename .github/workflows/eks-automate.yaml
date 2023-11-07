@@ -3,7 +3,7 @@ name: EKS Automate
 on:
   push:
     branches:
-      - eks-automate
+      - main
 
 jobs:
   deploy-or-destroy:
