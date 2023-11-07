@@ -10,9 +10,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+
       - name: Checkout Code
         uses: actions/checkout@v4
 
+
+      - name: Configure AWS Credentials
+        run: |
+          echo "$AWS_CREDENTIALS" > aws-credentials.json
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region us-east-1
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 
       - name: Check for DEPLOY or DESTROY file
