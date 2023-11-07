@@ -47,13 +47,13 @@ jobs:
 
           if [[ -f DEPLOY ]]; then
             echo "Checking if the EKS cluster exists..."
-            if aws eks describe-cluster --name $AWS_EKS_CLUSTERNAME --region $AWS_DEFAULT_REGION &> /dev/null; then
+            if aws eks describe-cluster --name $AWS_EKS_CLUSTER_NAME --region $AWS_DEFAULT_REGION &> /dev/null; then
               echo "EKS cluster already exists. Skipping deployment."
             else
               echo "Deploying EKS cluster..."
-              #eksctl create cluster --name $AWS_EKS_CLUSTERNAME --region $AWS_DEFAULT_REGION --node-type $AWS_INSTANCE_SIZE
+              #eksctl create cluster --name $AWS_EKS_CLUSTER_NAME --region $AWS_DEFAULT_REGION --node-type $AWS_INSTANCE_SIZE
               eksctl create cluster \
-                --name $AWS_EKS_CLUSTERNAME \
+                --name $AWS_EKS_CLUSTER_NAME \
                 --region $AWS_DEFAULT_REGION \
                 --version $AWS_EKS_VERSION \
                 --nodegroup-name $AWS_EKS_NODEGROUP_NAME \
@@ -66,11 +66,11 @@ jobs:
 
           elif [[ -f DESTROY ]]; then
             echo "Checking if the EKS cluster exists..."
-            if ! aws eks describe-cluster --name $AWS_EKS_CLUSTERNAME --region $AWS_DEFAULT_REGION &> /dev/null; then
+            if ! aws eks describe-cluster --name $AWS_EKS_CLUSTER_NAME --region $AWS_DEFAULT_REGION &> /dev/null; then
               echo "EKS cluster does not exist. Skipping destruction."
             else
               echo "Destroying EKS cluster..."
-              eksctl delete cluster --name $AWS_EKS_CLUSTERNAME --region $AWS_DEFAULT_REGION
+              eksctl delete cluster --name $AWS_EKS_CLUSTER_NAME --region $AWS_DEFAULT_REGION
             fi
 
           else
