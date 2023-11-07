@@ -32,13 +32,13 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Install AWS CLI and eksctl
+      - name: Install eksctl
         run: |
           curl --silent -L "https://github.com/eksctl-io/eksctl/releases/download/v0.164.0/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
           sudo mv /tmp/eksctl /usr/local/bin/eksctl
 
   
-      - name: Check for DEPLOY or DESTROY file
+      - name: Deploy or Destroy EKS cluster
         run: |
           if [[ -f DEPLOY ]] && [[ -f DESTROY ]]; then
             echo "Cannot perform both a  DEPLOY and DESTROY, please remove one of the files. Exiting..."
