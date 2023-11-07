@@ -31,8 +31,14 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
 
+      - name: Install AWS CLI and eksctl
+        run: |
+          curl --silent "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+          sudo mv /tmp/eksctl /usr/local/bin/eksctl
+
+  
       - name: Check for DEPLOY or DESTROY file
         run: |
           if [[ -f DEPLOY ]] && [[ -f DESTROY ]]; then
