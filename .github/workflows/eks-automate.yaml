@@ -31,7 +31,6 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          AWS_DEFAULT_REGION: ${{ env.AWS_DEFAULT_REGION }}
 
       - name: Install AWS CLI and eksctl
         run: |
@@ -52,8 +51,8 @@ jobs:
               echo "EKS cluster already exists. Skipping deployment."
             else
               echo "Deploying EKS cluster..."
-              # eksctl create cluster --name $AWS_EKS_CLUSTERNAME --region $AWS_DEFAULT_REGION --node-type $AWS_INSTANCE_SIZE
-              echo eksctl create cluster \
+              #eksctl create cluster --name $AWS_EKS_CLUSTERNAME --region $AWS_DEFAULT_REGION --node-type $AWS_INSTANCE_SIZE
+              eksctl create cluster \
                 --name $AWS_EKS_CLUSTERNAME \
                 --region $AWS_DEFAULT_REGION \
                 --version $AWS_EKS_VERSION \
@@ -79,6 +78,3 @@ jobs:
           fi
 
         continue-on-error: true
-#        env:
-#          AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-#          AWS_EKS_CLUSTERNAME: $AWS_EKS_CLUSTERNAME
