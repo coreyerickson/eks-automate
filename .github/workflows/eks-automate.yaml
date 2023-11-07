@@ -11,7 +11,12 @@ jobs:
 
     env:
       AWS_DEFAULT_REGION: ca-central-1
+      AWS_INSTANCE_SIZE: t3.xlarge
+      AWS_EKS_VERSION: 1.28
+      AWS_EKS_CLUSTER_NAME: sysdig-trial-cluster
+      AWS_EKS_NODEGROUP_NAME: sysdig-nodegroup
     
+
     steps:
 
       - name: Checkout Code
@@ -41,7 +46,17 @@ jobs:
               echo "EKS cluster already exists. Skipping deployment."
             else
               echo "Deploying EKS cluster..."
-              # eksctl create cluster --name $AWS_EKS_CLUSTERNAME --region $AWS_DEFAULT_REGION --node-type t2.micro
+              # eksctl create cluster --name $AWS_EKS_CLUSTERNAME --region $AWS_DEFAULT_REGION --node-type $AWS_INSTANCE_SIZE
+              eksctl create cluster \
+                --name $AWS_EKS_CLUSTERNAME \
+                --region $AWS_DEFAULT_REGION \
+                --version $AWS_EKS_VERSION \
+                --nodegroup-name $AWS_EKS_NODEGROUP_NAME \
+                --node-type $AWS_INSTANCE_SIZE \
+                --nodes 1 \
+                --nodes-min 1 \
+                --nodes-max 2 \
+                --tags Environment=DEV,Project=eks-automate
             fi
 
           elif [[ -f DESTROY ]]; then
@@ -50,7 +65,7 @@ jobs:
               echo "EKS cluster does not exist. Skipping destruction."
             else
               echo "Destroying EKS cluster..."
-              # eksctl delete cluster --name $AWS_EKS_CLUSTERNAME --region $AWS_DEFAULT_REGION
+              eksctl delete cluster --name $AWS_EKS_CLUSTERNAME --region $AWS_DEFAULT_REGION
             fi
 
           else
@@ -60,4 +75,4 @@ jobs:
         continue-on-error: true
         env:
           AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
-          AWS_EKS_CLUSTERNAME: ${{ env.AWS_EKS_CLUSTERNAME }}
+          AWS_EKS_CLUSTERNAME: $AWS_EKS_CLUSTERNAME
