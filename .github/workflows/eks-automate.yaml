@@ -51,7 +51,6 @@ jobs:
               echo "EKS cluster already exists. Skipping deployment."
             else
               echo "Deploying EKS cluster..."
-              #eksctl create cluster --name $AWS_EKS_CLUSTER_NAME --region $AWS_DEFAULT_REGION --node-type $AWS_INSTANCE_SIZE
               eksctl create cluster \
                 --name $AWS_EKS_CLUSTER_NAME \
                 --region $AWS_DEFAULT_REGION \
@@ -62,6 +61,8 @@ jobs:
                 --nodes-min 1 \
                 --nodes-max 2 \
                 --tags Environment=DEV,Project=eks-automate
+              echo "Configuring Cluster Logging..."
+              aws eks update-cluster-config --name $AWS_EKS_CLUSTER_NAME --logging '{"clusterLogging":[{"types":["scheduler","audit"],"enabled":true}]}'
             fi
 
           elif [[ -f DESTROY ]]; then
