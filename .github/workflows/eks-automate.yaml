@@ -13,8 +13,8 @@ jobs:
       AWS_DEFAULT_REGION: ca-central-1
       AWS_INSTANCE_SIZE: t3.xlarge
       AWS_EKS_VERSION: 1.28
-      AWS_EKS_CLUSTER_NAME: sysdig-trial-cluster
-      AWS_EKS_NODEGROUP_NAME: sysdig-nodegroup
+      AWS_EKS_CLUSTER_NAME: eks-trial-cluster
+      AWS_EKS_NODEGROUP_NAME: eks-nodegroup
     
 
     steps:
